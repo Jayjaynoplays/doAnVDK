@@ -4,11 +4,11 @@
 #fuses NOBROWNOUT
 #fuses NOLVP
 #device ADC = 10
-#use delay(crystal=20000000)
+#use delay(crystal=20M)
 
 unsigned CHAR  SevenSegments [10] = {0xC0,0XF9,0XA4,0XB0,0X99,0X92,0X82,0XF8,0X80,0X90};  //numbers of a digit
-unsigned INT8  BDT;
-unsigned INT16 GasValue,count ;
+unsigned INT32  BDT;
+unsigned INT32 GasValue,count ;
 
 
 #INT_AD
@@ -27,12 +27,12 @@ void  TIMER1_isr(void){ //Ngat timer
 }
 
 void alarm(){
-  if(GasValue < 15){
+  if(GasValue <= 30){
     output_high(pin_b0);
     output_low(pin_b1);
     output_low(pin_b2);
   }else {
-    if(GasValue < 40){
+    if(GasValue <= 60){
       output_low(pin_b0);
       output_high(pin_b1);
       output_low(pin_b2);
@@ -50,7 +50,8 @@ void show(){
 }
 
 void main(){
-
+   //GasValue = 0;
+   //count = 0;
   SET_TRIS_A (0x01); //set this port to be input FOR gas sensor
   SET_TRIS_B (0x00); //set this port to be ouput FOR warning LEDs
   SET_TRIS_C (0x00); //set this port to be ouput FOR 7 segments module
@@ -71,12 +72,14 @@ void main(){
   
   
   while(true){
-    for (count=0; count<=100; count++){
+    GasValue = 0;
+    for (count=0; count<100; count++){
       read_adc(ADC_START_ONLY);
       delay_ms(1);
     }
-    GasValue = Gasvalue / 2.046;
-    GasValue = Gasvalue / 100;
+    //GasValue = GasValue / 2.046;
+    //GasValue = GasValue / 100;
+    GasValue = GasValue /1023;
     output_high(pin_e0);
     alarm();
     show();
