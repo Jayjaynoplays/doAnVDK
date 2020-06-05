@@ -79,9 +79,10 @@ void main(){
     }
     //GasValue = GasValue / 2.046;
     //GasValue = GasValue / 100;
-    GasValue = GasValue /1023;
+    GasValue = GasValue /1020;
     output_high(pin_e0);
     alarm();
     show();
+    //
   }
 }
